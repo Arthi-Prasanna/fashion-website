@@ -1,0 +1,244 @@
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+    });
+});
+
+// Portfolio filtering logic
+const filterItems = document.querySelectorAll('.filter-item');
+const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+if (filterItems.length > 0) {
+    filterItems.forEach(item => {
+        item.addEventListener('click', function () {
+            // Remove active class from all filters
+            filterItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked filter
+            this.classList.add('active');
+
+            const filterValue = this.getAttribute('data-filter');
+
+            portfolioItems.forEach(portfolioItem => {
+                if (filterValue === 'all' || portfolioItem.getAttribute('data-category') === filterValue) {
+                    portfolioItem.style.display = 'block';
+                    setTimeout(() => {
+                        portfolioItem.style.opacity = '1';
+                        portfolioItem.style.transform = 'scale(1)';
+                    }, 10);
+                } else {
+                    portfolioItem.style.opacity = '0';
+                    portfolioItem.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        portfolioItem.style.display = 'none';
+                    }, 400);
+                }
+            });
+        });
+    });
+}
+
+// Event Modal Logic
+const modal = document.getElementById('eventModal');
+const modalBody = document.getElementById('modalBody');
+const closeBtn = document.querySelector('.close-modal');
+const eventCards = document.querySelectorAll('.event-card, .webinar-card');
+
+const eventDetails = {
+    show: {
+        title: "Annual Fashion Show 2026",
+        content: `
+            <h2 style="margin-bottom: 1.5rem;">Grand Annual Fashion Show</h2>
+            <img src="hero.png" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem;">
+            <p>Our annual fashion show at NIFT Hyderabad is the highlights of the year. Featuring over 50 exclusive bridal and couture designs by Smt. Lakshmi Prassanna, the show attracts industry leaders and fashion enthusiasts from across India.</p>
+            <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h4>Location</h4>
+                    <p>Grand Ballroom, Taj Krishna</p>
+                </div>
+                <div>
+                    <h4>Dates</h4>
+                    <p>December 15-18, 2026</p>
+                </div>
+            </div>
+        `
+    },
+    exhibition: {
+        title: "Craft & Couture Exhibition",
+        content: `
+            <h2 style="margin-bottom: 1.5rem;">Luxury Couture Exhibition</h2>
+            <img src="bridal.png" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem;">
+            <p>Join us for a 3-day exhibition showcasing the intricate craftsmanship of Indian bridal wear. We will be displaying limited edition collections and offering interactive design sessions.</p>
+            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                <li>Exclusive preview of Spring 2026 Bridal line</li>
+                <li>Custom consultation with Lakshmi Ma'am</li>
+                <li>Live embroidery demonstrations</li>
+            </ul>
+        `
+    },
+    press: {
+        title: "Press & Recognition",
+        content: `
+            <h2 style="margin-bottom: 1.5rem;">In the Spotlight</h2>
+            <p>Prassannaa Fashion Institute has been featured in leading national and regional publications for our contribution to fashion education and women's empowerment.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                <div style="background: #f0f0f0; padding: 1rem; border-radius: 10px;">Vogue India</div>
+                <div style="background: #f0f0f0; padding: 1rem; border-radius: 10px;">The Hindu</div>
+                <div style="background: #f0f0f0; padding: 1rem; border-radius: 10px;">Times Fashion</div>
+            </div>
+        `
+    },
+    webinar: {
+        title: "Bridal Fashion Masterclass",
+        content: `
+            <h2 style="margin-bottom: 1.5rem;">Free Masterclass: Bridal Couture</h2>
+            <img src="bridal.png" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem;">
+            <p>Ready to start your journey into bridal fashion? Join Smt. Lakshmi Prassanna for an intensive 2-hour masterclass. You will learn the basics of silhouette design and selection of premium fabrics for high-end bridal wear.</p>
+            <div style="background: #f9f9f9; padding: 2rem; border-radius: 15px; margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 1rem;">What you will learn:</h4>
+                <ul style="padding-left: 1.5rem;">
+                    <li>Bridal Trend Forecasting for 2026</li>
+                    <li>Understanding Zardosi and Hand Embroidery</li>
+                    <li>Portfolio building tips for designers</li>
+                </ul>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="https://zoom.us/j/1234567890" target="_blank" class="btn btn-primary" style="padding: 1rem 3rem;">Join Zoom Meeting</a>
+            </div>
+        `
+    },
+    foundation: {
+        title: "Fashion Design Foundation",
+        content: `
+            <div style="padding: 1rem;">
+                <span style="color: var(--secondary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">3 Months Program</span>
+                <h2 style="margin: 1rem 0;">Fashion Design Foundation</h2>
+                <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem; height: 250px; object-fit: cover;">
+                <p>This course is designed for beginners who want to build a strong foundation in fashion design. We cover everything from sketching to basic garment construction.</p>
+                <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <h4 style="margin-bottom: 1rem;">Curriculum Includes:</h4>
+                    <ul style="padding-left: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <li>Fashion Illustration</li>
+                        <li>Textile Science</li>
+                        <li>Pattern Making</li>
+                        <li>Garment Construction</li>
+                        <li>Color Theory</li>
+                        <li>History of Fashion</li>
+                    </ul>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; background: var(--primary-color); color: white; padding: 1.5rem; border-radius: 12px;">
+                    <div>
+                        <span style="display: block; opacity: 0.8; font-size: 0.9rem;">Course Fee</span>
+                        <span style="font-size: 1.5rem; font-weight: 800;">₹14,999</span>
+                    </div>
+                    <a href="https://wa.me/919876543210?text=I'm%20interested%20in%20the%20Foundation%20Course" class="btn btn-secondary" style="background: white; color: var(--primary-color); border: none;">Inquire on WhatsApp</a>
+                </div>
+            </div>
+        `
+    },
+    advanced: {
+        title: "Advanced Couture & Bridal",
+        content: `
+            <div style="padding: 1rem;">
+                <span style="color: var(--secondary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">6 Months Professional</span>
+                <h2 style="margin: 1rem 0;">Advanced Couture & Bridal</h2>
+                <img src="bridal.png" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem; height: 250px; object-fit: cover;">
+                <p>An intensive program focusing on the intricate world of luxury bridal wear and high-fashion couture techniques. Learn to create masterpieces from scratch.</p>
+                <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <h4 style="margin-bottom: 1rem;">Advanced Modules:</h4>
+                    <ul style="padding-left: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <li>Bridal Draping</li>
+                        <li>Advanced Embroidery</li>
+                        <li>Sustainable Couture</li>
+                        <li>Runway Design</li>
+                        <li>Boutique Management</li>
+                        <li>Portfolio Showcase</li>
+                    </ul>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; background: var(--secondary-color); color: white; padding: 1.5rem; border-radius: 12px;">
+                    <div>
+                        <span style="display: block; opacity: 0.8; font-size: 0.9rem;">Course Fee</span>
+                        <span style="font-size: 1.5rem; font-weight: 800;">₹29,999</span>
+                    </div>
+                    <a href="https://wa.me/919876543210?text=I'm%20interested%20in%20the%20Advanced%20Couture%20Course" class="btn btn-primary" style="background: white; color: var(--secondary-color); border: none;">Inquire on WhatsApp</a>
+                </div>
+            </div>
+        `
+    },
+    specialization: {
+        title: "Bridal Specialization",
+        content: `
+            <div style="padding: 1rem;">
+                <span style="color: var(--secondary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">1 Month Intensive</span>
+                <h2 style="margin: 1rem 0;">Bridal Specialization</h2>
+                <img src="hero.png" style="width: 100%; border-radius: 15px; margin-bottom: 1.5rem; height: 250px; object-fit: cover;">
+                <p>A fast-paced workshop for designers looking to master the specific skills required for the Indian bridal market. Focuses on premium silhouettes and surface ornamentation.</p>
+                <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <h4 style="margin-bottom: 1rem;">Workshop Highlights:</h4>
+                    <ul style="padding-left: 1.2rem;">
+                        <li>Traditional Zardosi Techniques</li>
+                        <li>Modern Bridal Silhouette Design</li>
+                        <li>Fabric Selection and Sourcing</li>
+                        <li>Pricing & Marketing for Bridal Brands</li>
+                    </ul>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; background: #333; color: white; padding: 1.5rem; border-radius: 12px;">
+                    <div>
+                        <span style="display: block; opacity: 0.8; font-size: 0.9rem;">Course Fee</span>
+                        <span style="font-size: 1.5rem; font-weight: 800;">₹7,499</span>
+                    </div>
+                    <a href="https://wa.me/919876543210?text=I'm%20interested%20in%20the%20Bridal%20Specialization" class="btn btn-primary" style="background: white; color: #333; border: none;">Inquire on WhatsApp</a>
+                </div>
+            </div>
+        `
+    }
+};
+
+if (modal && modalBody) {
+    eventCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const type = card.getAttribute('data-event');
+            const detail = eventDetails[type];
+            if (detail) {
+                modalBody.innerHTML = detail.content;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Stop scrolling
+            }
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
